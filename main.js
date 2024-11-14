@@ -5,7 +5,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (button_generate)
     {
-        button_generate.addEventListener('click', () => {request_password()});
+        button_generate.addEventListener('click', () => {
+            request_password(true);
+        });
     }
     
     // Copy to clipboard
@@ -13,14 +15,16 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (button_copy_to_clipboard)
     {
-        button_copy_to_clipboard.addEventListener('click', function() {copy_to_clipboard('.password-result')});
+        button_copy_to_clipboard.addEventListener('click', function() {
+            copy_to_clipboard('.password-result');
+        });
     }
 });
 
 /**
  * Send a password request
  */
-function request_password() 
+function request_password(copy_password_to_clipboard = false)
 {
     const length = document.querySelector('select[name="length"]').value;
     const field_lowercase = document.querySelector('input[name="lowercase"]').checked;
@@ -49,7 +53,14 @@ function request_password()
         return response.text();
     })
     .then(data => {
+        // Set the password value
         document.querySelector('.password-result').value = data;
+        
+        // Copy the password to the clipboard
+        if (copy_password_to_clipboard)
+        {
+            copy_to_clipboard('.password-result');
+        }
     });
 }
 
@@ -82,5 +93,5 @@ function copy_to_clipboard(identifier)
     setTimeout(function () {
         copiedMessage.style.display = 'none';
         copiedMessage.style.transition = '';
-    }, 2250); 
+    }, 2250);
 }
