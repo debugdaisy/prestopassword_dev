@@ -9,8 +9,8 @@
         <script>
             $(document).ready(function(){
                 var length = Math.floor(Math.random() * (16 - 8 + 1)) + 8;
-                var exclude_lowercase = false;
-                var exclude_uppercase = true;
+                var exclude_lowercase = true;
+                var exclude_uppercase = false;
                 var exclude_numbers = Math.random() < 0.5;
                 var exclude_special = Math.random() < 0.5;
                 

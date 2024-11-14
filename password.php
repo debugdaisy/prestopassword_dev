@@ -17,21 +17,20 @@ if (!empty($_POST))
     $exclude_special = isset($_POST['exclude_special']) ? filter_var($_POST['exclude_special'], FILTER_VALIDATE_BOOLEAN) : false;
     
     // Create the password
-    try
-    {
-        // Call generate with validation for allowed character sets
-        $password = $presto_password->generate($length, $exclude_lowercase, $exclude_uppercase, $exclude_numbers, $exclude_special);
-        echo $password;
-    }
-    catch (Exception $e)
-    {
-        // If the exception is thrown, output the message
-        echo 'Error: ' . $e->getMessage();
-    }
+    $password = $presto_password->generate($length, $exclude_lowercase, $exclude_uppercase, $exclude_numbers, $exclude_special);
+    
+    // Send the created password
+    echo $password;
 }
 
+/**
+ * Main class for managing password creation
+ */
 class presto_password
 {
+    /**
+     * Create the password
+     */
     function generate($length, $exclude_lowercase = false, $exclude_uppercase = false, $exclude_numbers = false, $exclude_special = false)
     {
         $letters = 'abcdefghijklmnopqrstuvwxyz';
@@ -64,10 +63,12 @@ class presto_password
             $character_set .= $special;
         }
         
-        // Check if the character set is empty
+        // If the character set is empty, use a default set
         if ($character_set === '')
         {
-            throw new Exception('At least one character set must be included.');
+            $character_set .= $letters;
+            $character_set .= strtoupper($letters);
+            $character_set .= $numbers;
         }
         
         // Generate the password
