@@ -9,18 +9,49 @@ if (!empty($_POST))
     // Instantiate class
     $presto_password = new presto_password();
     
-    // $_POST vars
-    $length = isset($_POST['length']) ? (int)$_POST['length'] : 12;
-    $exclude_lowercase = isset($_POST['exclude_lowercase']) ? filter_var($_POST['exclude_lowercase'], FILTER_VALIDATE_BOOLEAN) : false;
-    $exclude_uppercase = isset($_POST['exclude_uppercase']) ? filter_var($_POST['exclude_uppercase'], FILTER_VALIDATE_BOOLEAN) : false;
-    $exclude_numbers = isset($_POST['exclude_numbers']) ? filter_var($_POST['exclude_numbers'], FILTER_VALIDATE_BOOLEAN) : false;
-    $exclude_special = isset($_POST['exclude_special']) ? filter_var($_POST['exclude_special'], FILTER_VALIDATE_BOOLEAN) : false;
-    
-    // Create the password
-    $password = $presto_password->generate($length, $exclude_lowercase, $exclude_uppercase, $exclude_numbers, $exclude_special);
-    
-    // Send the created password
-    echo $password;
+    // Request password
+    if (!empty($_POST['request_password']))
+    {
+        // $_POST vars
+        $length = isset($_POST['length']) ? (int)$_POST['length'] : 12;
+        $exclude_lowercase = isset($_POST['exclude_lowercase']) ? filter_var($_POST['exclude_lowercase'], FILTER_VALIDATE_BOOLEAN) : false;
+        $exclude_uppercase = isset($_POST['exclude_uppercase']) ? filter_var($_POST['exclude_uppercase'], FILTER_VALIDATE_BOOLEAN) : false;
+        $exclude_numbers = isset($_POST['exclude_numbers']) ? filter_var($_POST['exclude_numbers'], FILTER_VALIDATE_BOOLEAN) : false;
+        $exclude_special = isset($_POST['exclude_special']) ? filter_var($_POST['exclude_special'], FILTER_VALIDATE_BOOLEAN) : false;
+        
+        // Create the password
+        $password = $presto_password->generate($length, $exclude_lowercase, $exclude_uppercase, $exclude_numbers, $exclude_special);
+        
+        // Send the created password
+        echo $password;
+    }
+    elseif (!empty($_POST['request_options_set']))
+    {
+        // Set cookie value
+        $params = [
+            'length' => $_POST['length'],
+            'exclude_lowercase' => $_POST['exclude_lowercase'],
+            'exclude_uppercase' => $_POST['exclude_uppercase'],
+            'exclude_numbers' => $_POST['exclude_numbers'],
+            'exclude_special' => $_POST['exclude_special'],
+            'remember' => $_POST['remember'],
+            'type' => $_POST['type'],
+            'alpha' => $_POST['alpha'],
+            'alphanumeric' => $_POST['alphanumeric'],
+            'every' => $_POST['every']
+        ];
+        
+        // Encode the parameters into a JSON string
+        $cookie_value = json_encode($params);
+        
+        // Set the cookie
+        setcookie('user_options', $cookie_value, time() + (365 * 24 * 60 * 60), "/");
+    }
+    elseif (!empty($_POST['request_options_get']))
+    {
+        // Get cookie value
+        echo 'get';
+    }
 }
 
 /**
@@ -83,15 +114,12 @@ class presto_password
     /**
      * Set a cookie
      */
-    function cookie_set(string $name, string $value, int $days = null): void
+    function cookie_set(string $name, string $value): void
     {
-        $expires = 0; // Default: Session cookie (expires when the browser closes)
+        // Cookie expiration in seconds
+        $expires = time() + (365 * 24 * 60 * 60);
         
-        if ($days !== null)
-        {
-            $expires = time() + ($days * 24 * 60 * 60); // Calculate expiration time in seconds
-        }
-        
+        // Set cookie value
         setcookie($name, $value, $expires, "/");
     }
     
@@ -100,6 +128,7 @@ class presto_password
      */
     function cookie_get(string $name): ?string
     {
+        // Return the cookie value
         return $_COOKIE[$name] ?? null;
     }
 }

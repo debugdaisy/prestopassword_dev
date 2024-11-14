@@ -1,4 +1,4 @@
-// Listenser
+// Listensers
 document.addEventListener('DOMContentLoaded', () => {
     // Generate password
     const button_generate = document.querySelector('.button-create-password');
@@ -19,6 +19,16 @@ document.addEventListener('DOMContentLoaded', () => {
             copy_to_clipboard('.password-result');
         });
     }
+    
+    // Set user options
+    const button_set_options = document.querySelector('.button-set-options');
+    
+    if (button_set_options)
+    {
+        button_set_options.addEventListener('click', function() {
+            options_set();
+        });
+    }
 });
 
 // Set the password on page load
@@ -29,6 +39,7 @@ request_password();
  */
 function request_password(copy_password_to_clipboard = false)
 {
+    const request_password = 1;
     const length = document.querySelector('select[name="length"]')?.value || 12;
     const field_lowercase = document.querySelector('input[name="lowercase"]')?.checked || false;
     const field_uppercase = document.querySelector('input[name="uppercase"]')?.checked || false;
@@ -37,6 +48,7 @@ function request_password(copy_password_to_clipboard = false)
     
     // Prepare the parameters for the POST request
     const params = {
+        request_password,
         length: length,
         exclude_lowercase: !field_lowercase,
         exclude_uppercase: !field_uppercase,
@@ -47,9 +59,7 @@ function request_password(copy_password_to_clipboard = false)
     // Make the POST request
     fetch('presto-password.php', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: new URLSearchParams(params).toString(),
     })
     .then(response => {
@@ -97,4 +107,50 @@ function copy_to_clipboard(identifier)
         copiedMessage.style.display = 'none';
         copiedMessage.style.transition = '';
     }, 2250);
+}
+
+/**
+ * Set options in a cookie
+ */
+function options_set()
+{
+    const request_options_set = 1;
+    const length = document.querySelector('select[name="length"]')?.value || 12;
+    const field_lowercase = document.querySelector('input[name="lowercase"]')?.checked || false;
+    const field_uppercase = document.querySelector('input[name="uppercase"]')?.checked || false;
+    const field_numbers = document.querySelector('input[name="numbers"]')?.checked || false;
+    const field_symbols = document.querySelector('input[name="symbols"]')?.checked || false;
+    const remember = document.querySelector('input[name="remember"]')?.checked || false;
+    const type = document.querySelector('input[name="type"]')?.checked || false;
+    const alpha = document.querySelector('input[name="alpha"]')?.checked || false;
+    const alphanumeric = document.querySelector('input[name="alphanumeric"]')?.checked || false;
+    const every = document.querySelector('input[name="every"]')?.checked || false;
+    
+    // Prepare the parameters for the POST request
+    const params = {
+        request_options_set,
+        length: length,
+        exclude_lowercase: !field_lowercase,
+        exclude_uppercase: !field_uppercase,
+        exclude_numbers: !field_numbers,
+        exclude_special: !field_symbols,
+        remember: remember,
+        type: type,
+        alpha: alpha,
+        alphanumeric: alphanumeric,
+        every: every
+    };
+    
+    // Make the POST request
+    fetch('presto-password.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: new URLSearchParams(params).toString(),
+    })
+    .then(response => {
+        console.log(response);
+    })
+    .then(data => {
+        console.log(data);
+    });
 }

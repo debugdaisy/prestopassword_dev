@@ -1,3 +1,7 @@
+<?php
+echo '<pre>' . print_r($_COOKIE['user_options'], true) . '</pre>';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -74,7 +78,7 @@
                     ?>
                 
                     <li>
-                        <input type="checkbox" name="remember" id="remember" value="1" /> Remember my options
+                        <input type="checkbox" name="remember" id="remember" class="button-set-options" value="1" /> Remember my options
                     </li>
                 </ul>
             </div>
