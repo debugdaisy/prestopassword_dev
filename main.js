@@ -21,16 +21,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// Set the password on page load
+request_password();
+
 /**
  * Send a password request
  */
 function request_password(copy_password_to_clipboard = false)
 {
-    const length = document.querySelector('select[name="length"]').value;
-    const field_lowercase = document.querySelector('input[name="lowercase"]').checked;
-    const field_uppercase = document.querySelector('input[name="uppercase"]').checked;
-    const field_numbers = document.querySelector('input[name="numbers"]').checked;
-    const field_symbols = document.querySelector('input[name="symbols"]').checked;
+    const length = document.querySelector('select[name="length"]')?.value || 12;
+    const field_lowercase = document.querySelector('input[name="lowercase"]')?.checked || false;
+    const field_uppercase = document.querySelector('input[name="uppercase"]')?.checked || false;
+    const field_numbers = document.querySelector('input[name="numbers"]')?.checked || false;
+    const field_symbols = document.querySelector('input[name="symbols"]')?.checked || false;
     
     // Prepare the parameters for the POST request
     const params = {
