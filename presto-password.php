@@ -31,7 +31,7 @@ class presto_password
     /**
      * Create the password
      */
-    function generate($length, $exclude_lowercase = false, $exclude_uppercase = false, $exclude_numbers = false, $exclude_special = false)
+    function generate($length, $exclude_lowercase = false, $exclude_uppercase = false, $exclude_numbers = false, $exclude_special = false): string
     {
         $letters = 'abcdefghijklmnopqrstuvwxyz';
         $numbers = '0123456789';
@@ -78,5 +78,28 @@ class presto_password
         }
         
         return $password;
+    }
+    
+    /**
+     * Set a cookie
+     */
+    function cookie_set(string $name, string $value, int $days = null): void
+    {
+        $expires = 0; // Default: Session cookie (expires when the browser closes)
+        
+        if ($days !== null)
+        {
+            $expires = time() + ($days * 24 * 60 * 60); // Calculate expiration time in seconds
+        }
+        
+        setcookie($name, $value, $expires, "/");
+    }
+    
+    /**
+     * Get a cookie value
+     */
+    function cookie_get(string $name): ?string
+    {
+        return $_COOKIE[$name] ?? null;
     }
 }
