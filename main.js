@@ -1,11 +1,19 @@
-// Listen for password generate click
+// Listenser
 document.addEventListener('DOMContentLoaded', () => {
-    const generateButton = document.querySelector('button[name="create_password"]');
+    // Generate password
+    const button_generate = document.querySelector('.button-create-password');
     
-    if (generateButton) {
-        generateButton.addEventListener('click', () => {
-            request_password();
-        });
+    if (button_generate)
+    {
+        button_generate.addEventListener('click', () => {request_password()});
+    }
+    
+    // Copy to clipboard
+    const button_copy_to_clipboard = document.querySelector('.button-copy-to-clipboard');
+    
+    if (button_copy_to_clipboard)
+    {
+        button_copy_to_clipboard.addEventListener('click', function() {copy_to_clipboard('password_result')});
     }
 });
 
@@ -19,8 +27,6 @@ function request_password()
     const field_uppercase = document.querySelector('input[name="uppercase"]').checked;
     const field_numbers = document.querySelector('input[name="numbers"]').checked;
     const field_symbols = document.querySelector('input[name="symbols"]').checked;
-    
-    console.log(field_lowercase);
     
     // Prepare the parameters for the POST request
     const params = {
@@ -40,17 +46,11 @@ function request_password()
         body: new URLSearchParams(params).toString(),
     })
     .then(response => {
-        if (!response.ok) 
-        {
-            throw new Error('Network response was not ok: ' + response.statusText);
-        }
-
         return response.text();
     })
     .then(data => {
-        document.querySelector('.result').innerText = data;
-    })
-    .catch(error => {});
+        document.querySelector('.password-result').value = data;
+    });
 }
 
 /**
@@ -68,6 +68,17 @@ function copy_to_clipboard(text_field_id)
     navigator.clipboard.writeText(input.value);
     
     // Fade out
-    jQuery('.home-password-copied').show();
-    jQuery('.home-password-copied').delay(1250).fadeOut();
+    // Show the element
+    document.querySelector('.password-copied').style.display = 'block';
+    
+    // Delay and fade out
+    setTimeout(function() {
+        document.querySelector('.password-copied').style.opacity = 0;
+        document.querySelector('.password-copied').style.transition = 'opacity 1s';
+    }, 1250);
+    
+    // After the fade-out, hide the element
+    setTimeout(function() {
+        document.querySelector('.password-copied').style.display = 'none';
+    }, 2250); // Total delay before hiding (1250ms + 1000ms for fade-out duration)
 }
