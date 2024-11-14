@@ -13,13 +13,13 @@
             <div>
                 <input type="text" name="password_result" class="password-result" value="" placeholder="Creating your password..." />
             
-                <span class="password-copied">
-                    <i class="fa-solid fa-circle-check"></i> <span class="home-password-copied-text">Copied</span>
+                <span class="password-copied" style="display: none;">
+                    <i class="fa-solid fa-circle-check"></i> Copied
                 </span>
             </div>
             
             <div>
-                <i class="fa-regular fa-copy button-copy-to-clipboard" title="Copy to Clipboard"></i>
+                <i class="fa-regular fa-copy button-copy-to-clipboard" title="Copy to Clipboard">Copy to clipboard</i>
             </div>
             
             <div>

@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (button_copy_to_clipboard)
     {
-        button_copy_to_clipboard.addEventListener('click', function() {copy_to_clipboard('password_result')});
+        button_copy_to_clipboard.addEventListener('click', function() {copy_to_clipboard('.password-result')});
     }
 });
 
@@ -56,29 +56,31 @@ function request_password()
 /**
  * Copy input value to clipboard
  */
-function copy_to_clipboard(text_field_id)
+function copy_to_clipboard(identifier)
 {
-    const input = document.getElementById(text_field_id);
+    const input = document.querySelector(identifier);
     
-    // Select the text field
+    // Ensure the input is selected
     input.select();
-    input.setSelectionRange(0, 99999);
+    input.setSelectionRange(0, 99999); // For mobile devices
     
-    // Copy the text inside the text field
+    // Copy the text inside the input field
     navigator.clipboard.writeText(input.value);
     
-    // Fade out
-    // Show the element
-    document.querySelector('.password-copied').style.display = 'block';
+    // Show the element and reset opacity
+    const copiedMessage = document.querySelector('.password-copied');
+    copiedMessage.style.display = 'block';
+    copiedMessage.style.opacity = 1;
     
-    // Delay and fade out
-    setTimeout(function() {
-        document.querySelector('.password-copied').style.opacity = 0;
-        document.querySelector('.password-copied').style.transition = 'opacity 1s';
+    // Apply fade out with a delay
+    setTimeout(function () {
+        copiedMessage.style.transition = 'opacity 1s';
+        copiedMessage.style.opacity = 0;
     }, 1250);
     
-    // After the fade-out, hide the element
-    setTimeout(function() {
-        document.querySelector('.password-copied').style.display = 'none';
-    }, 2250); // Total delay before hiding (1250ms + 1000ms for fade-out duration)
+    // Hide the element after fade-out
+    setTimeout(function () {
+        copiedMessage.style.display = 'none';
+        copiedMessage.style.transition = '';
+    }, 2250); 
 }
