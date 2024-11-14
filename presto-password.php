@@ -20,10 +20,7 @@ if (!empty($_POST))
         $exclude_special = isset($_POST['exclude_special']) ? filter_var($_POST['exclude_special'], FILTER_VALIDATE_BOOLEAN) : false;
         
         // Create the password
-        $password = $presto_password->generate($length, $exclude_lowercase, $exclude_uppercase, $exclude_numbers, $exclude_special);
-        
-        // Send the created password
-        echo $password;
+        echo $presto_password->generate($length, $exclude_lowercase, $exclude_uppercase, $exclude_numbers, $exclude_special);
     }
     elseif (!empty($_POST['request_options_set']))
     {
@@ -41,16 +38,15 @@ if (!empty($_POST))
             'every' => $_POST['every']
         ];
         
-        // Encode the parameters into a JSON string
-        $cookie_value = json_encode($params);
-        
-        // Set the cookie
-        setcookie('user_options', $cookie_value, time() + (365 * 24 * 60 * 60), "/");
+        $presto_password->options_set($params);
     }
     elseif (!empty($_POST['request_options_get']))
     {
         // Get cookie value
-        echo 'get';
+        if (isset($_COOKIE['user_options']))
+        {
+            $presto_password->options_get();
+        }
     }
 }
 
@@ -112,23 +108,28 @@ class presto_password
     }
     
     /**
-     * Set a cookie
+     * Set the cookie to store the user options if they want them remembered
      */
-    function cookie_set(string $name, string $value): void
+    function options_set($params): void
     {
-        // Cookie expiration in seconds
-        $expires = time() + (365 * 24 * 60 * 60);
+        // Encode the parameters into a JSON string
+        $cookie_value = json_encode($params);
         
-        // Set cookie value
-        setcookie($name, $value, $expires, "/");
+        // Set the cookie
+        setcookie('user_options', $cookie_value, time() + (365 * 24 * 60 * 60), "/");
     }
     
     /**
-     * Get a cookie value
+     * Get the cookie value for the user options
      */
-    function cookie_get(string $name): ?string
+    function options_get(): void
     {
-        // Return the cookie value
-        return $_COOKIE[$name] ?? null;
+        // Retrieve and decode the cookie value
+        $cookie_value = $_COOKIE['user_options'];
+        
+        // Decode the JSON string into a PHP array
+        $user_options = json_decode($cookie_value, true);
+        
+        echo '<pre>' . print_r($user_options, true) . '</pre>';
     }
 }

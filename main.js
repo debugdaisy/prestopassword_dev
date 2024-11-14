@@ -147,9 +147,35 @@ function options_set()
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: new URLSearchParams(params).toString(),
     })
-    .then(response => {
-        console.log(response);
+    .then(response =>
+        response.text()
+    )
+    .then(data => {
+        console.log(data);
+    });
+}
+
+/**
+ * Get the user options
+ */
+function options_get()
+{
+    const request_options_get = 1;
+    
+    // Prepare the parameters for the POST request
+    const params = {
+        request_options_get
+    };
+    
+    // Make the POST request
+    fetch('presto-password.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: new URLSearchParams(params).toString(),
     })
+    .then(response =>
+        response.text()
+    )
     .then(data => {
         console.log(data);
     });
