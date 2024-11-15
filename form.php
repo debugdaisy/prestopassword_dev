@@ -1,7 +1,3 @@
-<?php
-echo '<pre>' . print_r($_COOKIE['user_options'], true) . '</pre>';
-?>
-
 <!DOCTYPE html>
 <html lang="en">
     <head>
