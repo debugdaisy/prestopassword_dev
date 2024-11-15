@@ -1,37 +1,4 @@
-// Listensers
-document.addEventListener('DOMContentLoaded', () => {
-    // Generate password
-    const button_generate = document.querySelector('.button-create-password');
-    
-    if (button_generate)
-    {
-        button_generate.addEventListener('click', () => {
-            request_password(true);
-        });
-    }
-    
-    // Copy to clipboard
-    const button_copy_to_clipboard = document.querySelector('.button-copy-to-clipboard');
-    
-    if (button_copy_to_clipboard)
-    {
-        button_copy_to_clipboard.addEventListener('click', function() {
-            copy_to_clipboard('.password-result');
-        });
-    }
-    
-    // Set user options
-    const button_set_options = document.querySelector('.button-set-options');
-    
-    if (button_set_options)
-    {
-        button_set_options.addEventListener('click', function() {
-            options_set();
-        });
-    }
-});
-
-// Set the password on page load
+// On page load functions
 request_password();
 
 /**
@@ -39,7 +6,6 @@ request_password();
  */
 function request_password(copy_password_to_clipboard = false)
 {
-    const request_password = 1;
     const length = document.querySelector('select[name="length"]')?.value || 12;
     const field_lowercase = document.querySelector('input[name="lowercase"]')?.checked || false;
     const field_uppercase = document.querySelector('input[name="uppercase"]')?.checked || false;
@@ -48,7 +14,7 @@ function request_password(copy_password_to_clipboard = false)
     
     // Prepare the parameters for the POST request
     const params = {
-        request_password,
+        request_password: 1,
         length: length,
         exclude_lowercase: !field_lowercase,
         exclude_uppercase: !field_uppercase,
@@ -57,7 +23,7 @@ function request_password(copy_password_to_clipboard = false)
     };
     
     // Make the POST request
-    fetch('presto-password.php', {
+    fetch('password.php', {
         method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: new URLSearchParams(params).toString(),
@@ -110,11 +76,10 @@ function copy_to_clipboard(identifier)
 }
 
 /**
- * Set options in a cookie
+ * Set user options in a cookie
  */
 function options_set()
 {
-    const request_options_set = 1;
     const length = document.querySelector('select[name="length"]')?.value || 12;
     const field_lowercase = document.querySelector('input[name="lowercase"]')?.checked || false;
     const field_uppercase = document.querySelector('input[name="uppercase"]')?.checked || false;
@@ -128,7 +93,7 @@ function options_set()
     
     // Prepare the parameters for the POST request
     const params = {
-        request_options_set,
+        request_options_set: 1,
         length: length,
         exclude_lowercase: !field_lowercase,
         exclude_uppercase: !field_uppercase,
@@ -142,41 +107,84 @@ function options_set()
     };
     
     // Make the POST request
-    fetch('presto-password.php', {
+    fetch('password.php', {
         method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: new URLSearchParams(params).toString(),
-    })
-    .then(response =>
-        response.text()
-    )
-    .then(data => {
-        console.log(data);
     });
 }
 
 /**
- * Get the user options
+ * Get user options from a cookie
  */
 function options_get()
 {
-    const request_options_get = 1;
+    const name = 'user_options';
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
     
-    // Prepare the parameters for the POST request
-    const params = {
-        request_options_get
-    };
-    
-    // Make the POST request
-    fetch('presto-password.php', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: new URLSearchParams(params).toString(),
-    })
-    .then(response =>
-        response.text()
-    )
-    .then(data => {
-        console.log(data);
-    });
+    if (parts.length === 2)
+    {
+        const encoded_options = parts.pop().split(';').shift();
+        
+        if (encoded_options)
+        {
+            try
+            {
+                // Decode the URL-encoded string
+                const user_options = decodeURIComponent(encoded_options);
+                
+                // Parse the JSON
+                const options = JSON.parse(user_options);
+                
+                console.log(`length: ${options.length}`);
+                console.log(`exclude_lowercase: ${options.exclude_lowercase}`);
+                console.log(`exclude_uppercase: ${options.exclude_uppercase}`);
+                console.log(`exclude_numbers: ${options.exclude_numbers}`);
+                console.log(`exclude_special: ${options.exclude_special}`);
+                console.log(`remember: ${options.remember}`);
+                console.log(`type: ${options.type}`);
+                console.log(`alpha: ${options.alpha}`);
+                console.log(`alphanumeric: ${options.alphanumeric}`);
+                console.log(`every: ${options.every}`);
+            }
+            catch (error)
+            {
+                //console.error('Error parsing JSON:', error);
+            }
+        }
+    }
 }
+
+// Listensers
+document.addEventListener('DOMContentLoaded', () => {
+    // Generate password
+    const button_generate = document.querySelector('.button-create-password');
+    
+    if (button_generate)
+    {
+        button_generate.addEventListener('click', () => {
+            request_password(true);
+        });
+    }
+    
+    // Copy to clipboard
+    const button_copy_to_clipboard = document.querySelector('.button-copy-to-clipboard');
+    
+    if (button_copy_to_clipboard)
+    {
+        button_copy_to_clipboard.addEventListener('click', function() {
+            copy_to_clipboard('.password-result');
+        });
+    }
+    
+    // Set user options
+    const button_set_options = document.querySelector('.button-set-options');
+    
+    if (button_set_options)
+    {
+        button_set_options.addEventListener('click', function() {
+            options_set();
+        });
+    }
+});

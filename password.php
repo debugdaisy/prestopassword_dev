@@ -24,21 +24,32 @@ if (!empty($_POST))
     }
     elseif (!empty($_POST['request_options_set']))
     {
-        // Set cookie value
-        $params = [
-            'length' => $_POST['length'],
-            'exclude_lowercase' => $_POST['exclude_lowercase'],
-            'exclude_uppercase' => $_POST['exclude_uppercase'],
-            'exclude_numbers' => $_POST['exclude_numbers'],
-            'exclude_special' => $_POST['exclude_special'],
-            'remember' => $_POST['remember'],
-            'type' => $_POST['type'],
-            'alpha' => $_POST['alpha'],
-            'alphanumeric' => $_POST['alphanumeric'],
-            'every' => $_POST['every']
-        ];
+        // Check if user wants to remember or remove options
+        $remember = $_POST['remember'];
         
-        $presto_password->options_set($params);
+        if ($remember === 'true')
+        {
+            // Set cookie value
+            $params = [
+                'length' => $_POST['length'],
+                'exclude_lowercase' => $_POST['exclude_lowercase'],
+                'exclude_uppercase' => $_POST['exclude_uppercase'],
+                'exclude_numbers' => $_POST['exclude_numbers'],
+                'exclude_special' => $_POST['exclude_special'],
+                'remember' => $_POST['remember'],
+                'type' => $_POST['type'],
+                'alpha' => $_POST['alpha'],
+                'alphanumeric' => $_POST['alphanumeric'],
+                'every' => $_POST['every']
+            ];
+            
+            $presto_password->options_set($params);
+        }
+        else
+        {
+            // Delete cookie
+            $presto_password->options_set([], true);
+        }
     }
     elseif (!empty($_POST['request_options_get']))
     {
@@ -110,13 +121,21 @@ class presto_password
     /**
      * Set the cookie to store the user options if they want them remembered
      */
-    function options_set($params): void
+    function options_set($params, $delete_cookie = false): void
     {
-        // Encode the parameters into a JSON string
-        $cookie_value = json_encode($params);
-        
-        // Set the cookie
-        setcookie('user_options', $cookie_value, time() + (365 * 24 * 60 * 60), "/");
+        if ($delete_cookie)
+        {
+            // Delete the cookie by setting its expiration to a past time
+            setcookie('user_options', '', time() - 3600, "/");
+        }
+        else
+        {
+            // Encode the parameters into a JSON string
+            $cookie_value = json_encode($params);
+            
+            // Set or update the cookie
+            setcookie('user_options', $cookie_value, time() + (365 * 24 * 60 * 60), "/");
+        }
     }
     
     /**
@@ -129,7 +148,5 @@ class presto_password
         
         // Decode the JSON string into a PHP array
         $user_options = json_decode($cookie_value, true);
-        
-        echo '<pre>' . print_r($user_options, true) . '</pre>';
     }
 }
