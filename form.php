@@ -88,16 +88,16 @@ echo '<pre>' . print_r($_COOKIE['user_options'], true) . '</pre>';
             <div>
                 <ul>
                     <li>
-                        <input type="checkbox" name="lowercase" value="1" /> Lowercase (a, b, c)
+                        <input type="checkbox" name="lowercase" value="1" checked="checked" /> Lowercase (a, b, c)
                     </li>
                     <li>
-                        <input type="checkbox" name="uppercase" value="1" /> Uppercase (A, B, C)
+                        <input type="checkbox" name="uppercase" value="1" checked="checked" /> Uppercase (A, B, C)
                     </li>
                     <li>
-                        <input type="checkbox" name="numbers" value="1" /> Numbers (1, 2, 3)
+                        <input type="checkbox" name="numbers" value="1" checked="checked" /> Numbers (1, 2, 3)
                     </li>
                     <li>
-                        <input type="checkbox" name="symbols" value="1" /> Symbols (#, $, %)
+                        <input type="checkbox" name="symbols" value="1" checked="checked" /> Symbols (#, $, %)
                     </li>
                 </ul>
             </div>
