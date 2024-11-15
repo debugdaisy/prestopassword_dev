@@ -14,6 +14,8 @@ echo '<pre>' . print_r($_COOKIE['user_options'], true) . '</pre>';
         <div class="result"></div>
 
         <form name="home_password_form" method="post" action="">
+            <input type="hidden" name="custom" value="" />
+            
             <div>
                 <input type="text" name="password_result" class="password-result" value="" placeholder="Creating your password..." />
             
